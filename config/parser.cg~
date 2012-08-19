@@ -1,0 +1,14 @@
+[Installation]
+Folder=/home/robomotic/KungFuCode
+
+
+[Authentication]
+Username=epokh
+Password=epokh
+
+[Params]
+Frequency=2
+ServerURL=www.robomotic.com/upload.php
+
+[Others]
+Route: 66

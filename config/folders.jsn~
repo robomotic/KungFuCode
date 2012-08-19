@@ -1,0 +1,13 @@
+{
+  "Folder": "Project1",
+  "Recursive": true,
+  "Tracking": true,
+  "FileTypes": [
+    "cpp",
+    "h"
+  ]
+  "IgnoreTypes": [
+    "obj",
+    "a"
+  ]
+}

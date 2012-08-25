@@ -37,7 +37,13 @@ class FileIndex:
             Column('time',  TIMESTAMP(), default=now())
         )
         self.__file_index.create()
-        #see code here http://stackoverflow.com/questions/414952/sqlalchemy-datetime-timezone
+        #this table stores just the file name with a foreign key to the bulk information
+        self.__file_name=Table('file', self.__metadata,
+            Column('filename', String, primary_key=True),
+            Column('file_id', Integer, ForeignKey('index.user_id')),
+        )
+        self.__file_name.create()
+
     def addEntry(self, filepath, ext, rows, size):
         operation = self.__file_index.insert()
         result=operation.execute(filename=filepath, hash='None', rows=rows, size=size, time=now(), ext=ext)

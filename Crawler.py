@@ -52,13 +52,22 @@ class Task(object):
     def compute(self):
         #get the list of files
         self.list=self.folder.GetFileList(self.top)
+        summary={}
         #compute lines of code and density
         for filepath, size in self.list.items():    
             reader=FileReader(filepath)
+            currentLines=reader.GetLines()
             #now add to database
             extension=os.path.splitext(filepath)[1][1:].strip() 
-            self.database.addEntry(filepath, extension,reader.GetLines(),  size)
-        
+            if extension in summary.keys():
+                summary[extension]+=currentLines
+            else:
+                summary[extension]=currentLines
+            self.database.addEntry(filepath, extension,currentLines,  size)
+        self.UpdateResults(summary)
+    def UpdateResults(self, summary):
+        print "TODO: update results"
+        print summary
     def shouldRun(self):
         return time.time() >= self.next_run
 

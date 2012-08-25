@@ -1,13 +1,30 @@
 {
-  "Folder": "Project1",
-  "Recursive": true,
-  "Tracking": true,
-  "FileTypes": [
-    "cpp",
-    "h"
-  ],
-  "Ignores": [
-    "obj",
-    "a"
-  ]
+    "Folders":[
+    {
+      "Name": "test1",
+      "Recursive": true,
+      "Tracking": true,
+      "FileTypes": [
+        "cpp",
+        "c",
+        "h"
+      ],
+      "Ignores": [
+        "am",
+        "ico",
+        "c~"]
+    },
+    {
+      "Name": "test2",
+      "Recursive": true,
+      "Tracking": true,
+      "FileTypes": [
+        "h","cpp"
+      ],
+      "Ignores": [
+        "pro",
+        "qrc"
+        ]
+    }
+    ]
 }

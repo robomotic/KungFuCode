@@ -1,4 +1,4 @@
-# FileReader: a simple class to count the number of line codes in a file
+# Crawler: this is the main daemon to compute all the code analytics
 # Author: Paolo Di Prodi
 # Copyright 2012 Robomotic ltd
 #
@@ -22,8 +22,6 @@ from FileStat import  *
 from Database import *
 import ConfigParser
 
-interval=2
-
 def log():
     logging.info('Updating database index')
     
@@ -41,7 +39,7 @@ class Task(object):
         self.database=FileIndex()
         self.loadConfig()
 
-    def loadConfig(self):
+    def loadTestConfig(self):
         Config = ConfigParser.ConfigParser()
         Config.read("config/parser.ini")
         self.top=Config.get("TestFolder", "Path")
@@ -49,9 +47,20 @@ class Task(object):
         self.delay=float(self.delay)
         logging.info('Scanning test folder')
         
+    def loadConfig(self):
+        Config = ConfigParser.ConfigParser()
+        Config.read("config/parser.ini")
+        self.delay=Config.get("Params", "Frequency")
+        self.delay=float(self.delay)
+        logging.info('Scanning test folder')
+        
     def compute(self):
         #get the list of files
-        self.list=self.folder.GetFileList(self.top)
+        #self.list=self.folder.GetFileList(self.top)
+        self.list=self.folder.GetAutoList()
+        if self.list==None:
+            return 0
+        else: print self.list
         summary={}
         #compute lines of code and density
         for filepath, size in self.list.items():    
@@ -65,6 +74,7 @@ class Task(object):
                 summary[extension]=currentLines
             self.database.addEntry(filepath, extension,currentLines,  size)
         self.UpdateResults(summary)
+        
     def UpdateResults(self, summary):
         print "TODO: update results"
         print summary

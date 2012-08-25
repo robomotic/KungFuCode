@@ -17,22 +17,50 @@
 
 import os
 import sys
+import json
+from pprint import pprint
 
 class FolderScanner:
     __fileList = {}
     __fileSize=0
     __folderCount=0
     __rootdir = None
-
-    def GetFileList(self, rootdir):
-        self.Reset()
+    __config=None
+    
+    def __init__(self):
+        self.LoadSettings()
+        
+    def LoadSettings(self):
+        json_data=open("config/folders.jsn")
+        self.__config = json.load(json_data)
+        #ignores=data['Ignores']
+        #print ignores
+        #pprint(data)
+        json_data.close()
+        
+    def GetFileList(self, rootdir, inc, exc):
+        print "Scanning folder ", rootdir
         self.__rootdir=rootdir
         for root, subFolders, files in os.walk(rootdir):
             for file in files:
                 filename=os.path.join(root,file)
-                self.__fileList[filename]=os.path.getsize(filename)
+                filext=os.path.splitext(filename)[1][1:].strip() 
+                if inc:
+                    if filext in inc:
+                        self.__fileList.update({filename:os.path.getsize(filename)})
+                        #print "Adding ", filename,  " with size ", os.path.getsize(filename)
+                        #self.__fileList[filename]=os.path.getsize(filename)
+                elif exc:
+                    if filext not in exc:
+                        self.__fileList.update({filename:os.path.getsize(filename)})
+            for sub in subFolders:
+                self.GetFileList(os.path.join(rootdir,sub), inc, exc)
+                
+    def GetAutoList(self):
+        self.Reset()
+        for rootfolder in self.__config['Folders']:
+            self.GetFileList(rootfolder['Name'], rootfolder["FileTypes"], rootfolder["Ignores"])
         return self.__fileList
-        
     def Reset(self):
         self.__fileList = {}
         self.__fileSize = 0
@@ -47,7 +75,7 @@ class FolderScanner:
             for file in files:
                 f = os.path.join(root,file)
                 self.__fileSize += os.path.getsize(f)
-                self.__fileList.append(f)
+
     def GetFileSize(self):
         return self.__fileSize;
     def GetFolderNumber(self):

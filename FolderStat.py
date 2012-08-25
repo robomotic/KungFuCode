@@ -19,22 +19,25 @@ import os
 import sys
 
 class FolderScanner:
-    __fileList = []
+    __fileList = {}
     __fileSize=0
     __folderCount=0
     __rootdir = None
+
     def GetFileList(self, rootdir):
         self.Reset()
         self.__rootdir=rootdir
         for root, subFolders, files in os.walk(rootdir):
             for file in files:
-                self.__fileList.append(os.path.join(root,file))
+                filename=os.path.join(root,file)
+                self.__fileList[filename]=os.path.getsize(filename)
         return self.__fileList
+        
     def Reset(self):
-        __fileList = []
-        __fileSize = 0
-        __folderCount = 0
-        __rootdir = None
+        self.__fileList = {}
+        self.__fileSize = 0
+        self.__folderCount = 0
+        self.__rootdir = None
         
     def ScanAll(self, rootdir):
         self.Reset()
@@ -53,7 +56,7 @@ class FolderScanner:
 if __name__ == "__main__":
     folder=FolderScanner()
     files=folder.GetFileList("tests")
-    print "Total Files %d"%  len(files)
+    print files
     folder.Reset()
     folder.ScanAll("tests");
     print("Total Size is {0} bytes".format(folder. GetFileSize()))

@@ -61,5 +61,8 @@ void main(void)
 	lcdmem 	= (unsigned char *)0x0A27;
 	*lcdmem = (unsigned char)(*lcdmem | (BIT4+BIT5+BIT6+BIT2));
 
-  __no_operation();  // For debugger
+	for(char i=0;i<23;i++)
+	{
+	  __no_operation();  // For debugger
+	}
 }

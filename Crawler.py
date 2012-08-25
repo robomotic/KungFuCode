@@ -25,10 +25,8 @@ import ConfigParser
 interval=2
 
 def log():
-    logging.info('Computing density...')
+    logging.info('Updating database index')
     
-class UTCFormatter(logging.Formatter):
-    converter = time.gmtime # not documented, had to read the module's source code ;-) 
 
 class Task(object):
     def __init__(self, func, delay, args=()):
@@ -36,8 +34,7 @@ class Task(object):
         self.function = func
         self.delay = delay
         self.next_run = time.time() + self.delay
-        fh=logging.basicConfig(filename='daemon.log',level=logging.DEBUG, formatter=UTCFormatter('[%(asctime)s] %(message)s', '%d/%b/%Y:%H:%M:%S'))
-        #formatter = UTCFormatter('[%(asctime)s] %(message)s', '%d/%b/%Y:%H:%M:%S')
+        logging.basicConfig(filename="daemon.log",level=logging.DEBUG, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')        #formatter = UTCFormatter('[%(asctime)s] %(message)s', '%d/%b/%Y:%H:%M:%S')
         #fh.setFormatter(formatter)
         #logging.addHandler(fh) 
         self.folder=FolderScanner()
@@ -59,7 +56,8 @@ class Task(object):
         for filepath, size in self.list.items():    
             reader=FileReader(filepath)
             #now add to database
-            self.database.addEntry(filepath, reader.GetLines(), size)
+            extension=os.path.splitext(filepath)[1][1:].strip() 
+            self.database.addEntry(filepath, extension,reader.GetLines(),  size)
         
     def shouldRun(self):
         return time.time() >= self.next_run

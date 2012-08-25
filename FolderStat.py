@@ -39,7 +39,6 @@ class FolderScanner:
         json_data.close()
         
     def GetFileList(self, rootdir, inc, exc):
-        print "Scanning folder ", rootdir
         self.__rootdir=rootdir
         for root, subFolders, files in os.walk(rootdir):
             for file in files:

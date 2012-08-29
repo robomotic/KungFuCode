@@ -20,6 +20,7 @@ import logging
 from FolderStat import *
 from FileStat import  *
 from Database import *
+from Communicator import *
 import ConfigParser
 
 def log():
@@ -37,6 +38,7 @@ class Task(object):
         #logging.addHandler(fh) 
         self.folder=FolderScanner()
         self.database=FileIndex()
+        self.comm=Client()
         self.loadConfig()
 
     def loadTestConfig(self):
@@ -60,7 +62,7 @@ class Task(object):
         self.list=self.folder.GetAutoList()
         if self.list==None:
             return 0
-        else: print self.list
+        #else: print self.list
         summary={}
         #compute lines of code and density
         for filepath, size in self.list.items():    
@@ -73,11 +75,13 @@ class Task(object):
             else:
                 summary[extension]=currentLines
             self.database.addEntry(filepath, extension,currentLines,  size)
-        self.UpdateResults(summary)
+        if summary: self.UpdateResults(summary)
+        logging.info(str(summary))
         
     def UpdateResults(self, summary):
-        print "TODO: update results"
-        print summary
+        
+        self.comm.postStats(summary)
+        
     def shouldRun(self):
         return time.time() >= self.next_run
 
@@ -88,8 +92,7 @@ class Task(object):
         # self.next_run = time.time() + self.delay
 
 if __name__ == "__main__":
-    
-    tasks = [Task(log,  interval )] 
+    tasks = [Task(log,  1 )] 
     while True:
         for t in tasks:
             if t.shouldRun():

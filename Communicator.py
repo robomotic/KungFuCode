@@ -25,14 +25,16 @@ class Client(object):
     __version=1.0
     __conn=None
     def __init__(self):
+        Config = ConfigParser.ConfigParser()
         Config.read("config/parser.ini")
         self.user=Config.get("Authentication", "Username")
         self.password=Config.get("Authentication", "Password")
-        self.__conn = restful_lib.Connection("http://coder.robomotic.com", username=self.user, password=self.password)
+        self.server=Config.get("Params","SERVERNAME")
+        self.__conn = restful_lib.Connection("http://codefactor.phpfogapp.com/", username=self.user, password=self.password)
     def postStats(self, data):
-        response =self.__conn.request_post("/upload.php", body=data)
-        print response
+        response =self.__conn.request_post("/upload.php", args=data)
+        #print response
 
     def getStats(self, data):
-        response =self.__conn.request_get("/get.php", body=data)
-        print response
+        response =self.__conn.request_get("/get.php", args=data)
+        #print response

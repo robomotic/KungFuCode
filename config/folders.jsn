@@ -1,7 +1,7 @@
 {
     "Folders":[
     {
-      "Name": "test1",
+      "Name": "tests",
       "Recursive": true,
       "Tracking": true,
       "FileTypes": [

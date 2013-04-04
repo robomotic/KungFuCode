@@ -15,26 +15,37 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#########################################################################
+__author__="Paolo Di Prodi"
+__version__ = "1.0"
+#########################################################################
+
+"""@package Communicator
+This is the class that is responsible for pushing/pulling data from the RESTful database
+
+"""
+
 import time
 import logging
 from rest import restful_lib
 import ConfigParser
 
 class Client(object):
-    
+    """The restful client talks to the Node.js server via GET and POST HTTP methods"""    
     __version=1.0
     __conn=None
     def __init__(self):
+        """The constructor.  """
         Config = ConfigParser.ConfigParser()
         Config.read("config/parser.ini")
         self.user=Config.get("Authentication", "Username")
         self.password=Config.get("Authentication", "Password")
         self.server=Config.get("Params","SERVERNAME")
-        self.__conn = restful_lib.Connection("http://codefactor.phpfogapp.com/", username=self.user, password=self.password)
+        self.__conn = restful_lib.Connection(self.server, username=self.user, password=self.password)
     def postStats(self, data):
-        response =self.__conn.request_post("/upload.php", args=data)
-        #print response
+        response =self.__conn.request_post("/upload", args=data)
+        logging.info(response)
 
     def getStats(self, data):
-        response =self.__conn.request_get("/get.php", args=data)
-        #print response
+        response =self.__conn.request_get("/get", args=data)
+        logging.info(response)
